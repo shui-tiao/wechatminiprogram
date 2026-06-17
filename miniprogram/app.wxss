@@ -1,0 +1,30 @@
+/* 页面基础样式 - 重置边距并设置全屏尺寸 */
+page {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  
+  /* 浅色模式 - 主题色彩变量定义 */
+  --bg-primary: #ffffff;      /* 主背景色 - 白色 */
+  --bg-secondary: #f5f5f5;    /* 次背景色 - 浅灰 */
+  --text-primary: #333333;    /* 主文字色 - 深灰 */
+  --text-secondary: #666666;  /* 次文字色 - 中灰 */
+  --text-muted: #999999;      /* 弱化文字色 - 浅灰 */
+  --border-color: #e0e0e0;    /* 边框颜色 - 极浅灰 */
+}
+
+/* 深色模式媒体查询 - 根据系统偏好自动切换 */
+@media (prefers-color-scheme: dark) {
+  page {
+    /* 深色模式 - 主题色彩变量覆盖 */
+    --bg-primary: #1a1a1a;    /* 主背景色 - 近黑 */
+    --bg-secondary: #2a2a2a;  /* 次背景色 - 深灰 */
+    --text-primary: #ffffff;  /* 主文字色 - 纯白 */
+    --text-secondary: #cccccc;/* 次文字色 - 浅灰 */
+    --text-muted: #666666;    /* 弱化文字色 - 中灰 */
+    --border-color: #3a3a3a;  /* 边框颜色 - 深灰 */
+  }
+}

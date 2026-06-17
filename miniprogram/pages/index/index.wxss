@@ -1,0 +1,670 @@
+/* ========== 页面根元素：全屏布局 ========== */
+page {
+  height: 100vh;          /* 全屏高度 */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* 深色模式：页面背景改为纯黑 */
+@media (prefers-color-scheme: dark) {
+  page {
+    background: #000000;
+  }
+}
+
+/* ========== 根容器：垂直居中布局，适配安全区域 ========== */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    /* 垂直居中 */
+  align-items: center;        /* 水平居中 */
+  padding-top: env(safe-area-inset-top);      /* 顶部安全区域（刘海屏） */
+  padding-left: 4vw;
+  padding-right: 4vw;
+  padding-bottom: calc(4vw + env(safe-area-inset-bottom));  /* 底部安全区域 */
+  box-sizing: border-box;
+}
+
+/* ========== 卡片容器：白色圆角卡片 ========== */
+.card {
+  width: 100%;
+  max-width: 340px;                /* 最大宽度限制 */
+  background: var(--bg-primary);   /* 使用 CSS 变量控制背景色 */
+  border-radius: 18px;
+  padding: 34px 22px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.15);  /* 卡片阴影 */
+  max-height: 90vh;                /* 防止内容过高溢出 */
+  overflow-y: auto;                /* 内容溢出时滚动 */
+  box-sizing: border-box;
+}
+
+/* 深色模式：加深卡片阴影 */
+@media (prefers-color-scheme: dark) {
+  .card {
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 小屏手机（≤375px）：缩小卡片内边距和宽度 */
+@media screen and (max-width: 375px) {
+  .card {
+    padding: 28px 20px;
+    max-width: 320px;
+  }
+}
+
+/* 极小屏（≤320px）：进一步压缩 */
+@media screen and (max-width: 320px) {
+  .card {
+    padding: 20px 16px;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+}
+
+/* 矮屏设备（高度≤400px）：压缩内边距 */
+@media screen and (max-height: 400px) {
+  .card {
+    padding: 16px 12px;
+    max-height: 95vh;
+  }
+}
+
+/* 平板及以上（≥768px）：适当放大 */
+@media screen and (min-width: 768px) {
+  .card {
+    padding: 40px 30px;
+    max-width: 400px;
+  }
+}
+
+/* ========== 头部：标题和副标题 ========== */
+.header {
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.title {
+  display: block;
+  font-size: clamp(28px, 7.5vw, 36px);  /* 流式字体：最小28px，最大36px */
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  display: block;
+  font-size: clamp(14px, 3.5vw, 18px);  /* 流式字体：最小14px，最大18px */
+  color: var(--text-muted);              /* 次要文字颜色 */
+}
+
+/* 小屏（≤375px）：缩小头部字号 */
+@media screen and (max-width: 375px) {
+  .header {
+    margin-bottom: 28px;
+  }
+  
+  .title {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+  
+  .subtitle {
+    font-size: clamp(12px, 3vw, 16px);
+  }
+}
+
+/* 极小屏（≤320px）：进一步缩小 */
+@media screen and (max-width: 320px) {
+  .header {
+    margin-bottom: 18px;
+  }
+  
+  .title {
+    font-size: clamp(20px, 8vw, 26px);
+    margin-bottom: 4px;
+  }
+  
+  .subtitle {
+    font-size: clamp(10px, 3.5vw, 14px);
+  }
+}
+
+/* 矮屏（≤400px）：压缩间距 */
+@media screen and (max-height: 400px) {
+  .header {
+    margin-bottom: 12px;
+  }
+  
+  .title {
+    font-size: clamp(18px, 6vw, 24px);
+    margin-bottom: 2px;
+  }
+  
+  .subtitle {
+    font-size: clamp(10px, 3vw, 12px);
+  }
+}
+
+/* 平板（≥768px）：放大间距 */
+@media screen and (min-width: 768px) {
+  .header {
+    margin-bottom: 40px;
+  }
+  
+  .title {
+    font-size: 32px;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+  }
+}
+
+/* ========== 输入区域 ========== */
+.input-section {
+  margin-bottom: 22px;
+}
+
+/* 输入框外层包装 */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);   /* 使用 CSS 变量控制背景 */
+  border-radius: 8px;
+  padding: 0 18px;
+  min-height: 64px;
+  height: auto;
+  gap: 8px;
+}
+
+/* 振动进行中：去掉内边距，让进度条填满 */
+.input-wrapper.is-vibrating {
+  padding: 0;
+  min-height: 64px;
+  height: 64px;
+}
+
+/* 振动中隐藏复用按钮 */
+.input-wrapper.is-vibrating .reuse-icon {
+  display: none;
+}
+
+/* 小屏（≤375px）：缩小输入区域 */
+@media screen and (max-width: 375px) {
+  .input-section {
+    margin-bottom: 18px;
+  }
+  
+  .input-wrapper {
+    min-height: 56px;
+    padding: 0 16px;
+  }
+  
+  .input-wrapper.is-vibrating {
+    min-height: 56px;
+    height: 56px;
+  }
+}
+
+/* 极小屏（≤320px）：进一步压缩 */
+@media screen and (max-width: 320px) {
+  .input-section {
+    margin-bottom: 12px;
+  }
+  
+  .input-wrapper {
+    min-height: 48px;
+    padding: 0 12px;
+    gap: 6px;
+  }
+  
+  .input-wrapper.is-vibrating {
+    min-height: 48px;
+    height: 48px;
+  }
+}
+
+/* 矮屏（≤400px）：压缩间距 */
+@media screen and (max-height: 400px) {
+  .input-section {
+    margin-bottom: 10px;
+  }
+  
+  .input-wrapper {
+    min-height: 44px;
+    padding: 0 10px;
+  }
+  
+  .input-wrapper.is-vibrating {
+    min-height: 44px;
+    height: 44px;
+  }
+}
+
+/* 平板（≥768px）：放大输入区域 */
+@media screen and (min-width: 768px) {
+  .input-section {
+    margin-bottom: 28px;
+  }
+  
+  .input-wrapper {
+    min-height: 72px;
+  }
+  
+  .input-wrapper.is-vibrating {
+    min-height: 72px;
+    height: 72px;
+  }
+}
+
+/* ========== 复用按钮：点击复用上次振动时间 ========== */
+.reuse-icon {
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;                    /* 不参与伸缩，保持固定宽度 */
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* 隐藏状态：不可见且不可点击 */
+.reuse-icon.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;              /* 阻止点击事件 */
+}
+
+/* 可见状态 */
+.reuse-icon.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 按下缩放反馈 */
+.reuse-icon:active {
+  transform: scale(0.9);
+}
+
+@media screen and (max-width: 375px) {
+  .reuse-icon {
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .reuse-icon {
+    font-size: 14px;
+    padding: 2px;
+  }
+}
+
+@media screen and (max-height: 400px) {
+  .reuse-icon {
+    font-size: 12px;
+    padding: 2px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .reuse-icon {
+    font-size: 24px;
+  }
+}
+
+/* ========== 输入内容区：输入框 + 单位 ========== */
+.input-content {
+  flex: 1;               /* 占据剩余空间 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 时间输入框 */
+.time-input {
+  flex: 1;
+  font-size: min(clamp(18px, 4vw, 24px), 40px);  /* 流式字号，上限40px */
+  font-weight: bold;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1;
+}
+
+/* 单位文字（"秒"） */
+.unit {
+  font-size: min(clamp(16px, 3.5vw, 20px), 32px);
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: 1;
+}
+
+@media screen and (max-width: 375px) {
+  .time-input {
+    font-size: min(clamp(16px, 4vw, 20px), 32px);
+  }
+  
+  .unit {
+    font-size: min(clamp(14px, 3.5vw, 18px), 28px);
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .time-input {
+    font-size: min(clamp(14px, 5vw, 18px), 28px);
+  }
+  
+  .unit {
+    font-size: min(clamp(12px, 4vw, 16px), 24px);
+  }
+}
+
+@media screen and (max-height: 400px) {
+  .time-input {
+    font-size: min(clamp(12px, 4vw, 16px), 24px);
+  }
+  
+  .unit {
+    font-size: min(clamp(10px, 3.5vw, 14px), 20px);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .time-input {
+    font-size: 20px;
+  }
+  
+  .unit {
+    font-size: 18px;
+  }
+}
+
+/* ========== 进度条区域（振动中显示） ========== */
+.progress-content {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 进度条背景轨道 */
+.progress-bar {
+  width: 100%;
+  height: 100%;
+  background: var(--border-color);   /* 轨道背景色 */
+  border-radius: 8px;
+  overflow: hidden;                  /* 裁剪溢出 */
+  position: relative;
+}
+
+/* 进度条填充部分（动态宽度） */
+.progress-fill {
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.3s ease;       /* 宽度变化动画 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 进度条内的剩余秒数文字 */
+.progress-text {
+  font-size: min(clamp(18px, 4vw, 24px), 40px);
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);  /* 文字阴影增强可读性 */
+  line-height: 1;
+}
+
+@media screen and (max-width: 375px) {
+  .progress-text {
+    font-size: min(clamp(16px, 4vw, 20px), 32px);
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .progress-text {
+    font-size: min(clamp(14px, 5vw, 18px), 28px);
+  }
+}
+
+@media screen and (max-height: 400px) {
+  .progress-text {
+    font-size: min(clamp(12px, 4vw, 16px), 24px);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .progress-text {
+    font-size: 20px;
+  }
+}
+
+/* ========== 按钮区域 ========== */
+.button-section {
+  margin-bottom: 22px;
+}
+
+/* 按钮行：开始按钮 + 强度切换并排 */
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 行内的开始按钮占据剩余空间 */
+.button-row .btn-start {
+  flex: 1;
+}
+
+/* 振动强度切换按钮（圆形） */
+.intensity-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--bg-secondary);
+  border-radius: 50%;               /* 圆形 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 按下缩放反馈 */
+.intensity-toggle:active {
+  transform: scale(0.95);
+}
+
+/* 强度图标（🔊/🔉） */
+.intensity-icon {
+  font-size: 18px;
+}
+
+/* 强度文字（强/弱） */
+.intensity-text {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ========== 通用按钮样式 ========== */
+.btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 28px;              /* 圆角胶囊按钮 */
+  font-size: clamp(18px, 4.5vw, 24px);
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* 开始按钮：文字白色（背景由内联 style 控制） */
+.btn-start {
+  color: #ffffff;
+}
+
+/* 开始按钮禁用态：灰色背景 */
+.btn-start[disabled] {
+  background: var(--border-color);
+  color: var(--text-muted);
+}
+
+/* 停止按钮：红色渐变背景 */
+.btn-stop {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  color: #ffffff;
+}
+
+/* 小屏（≤375px）：缩小按钮 */
+@media screen and (max-width: 375px) {
+  .button-section {
+    margin-bottom: 18px;
+  }
+  
+  .btn {
+    height: 48px;
+    font-size: clamp(16px, 4vw, 20px);
+  }
+  
+  .intensity-toggle {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .intensity-icon {
+    font-size: 14px;
+  }
+  
+  .intensity-text {
+    font-size: 9px;
+  }
+}
+
+/* 极小屏（≤320px）：进一步缩小 */
+@media screen and (max-width: 320px) {
+  .button-section {
+    margin-bottom: 12px;
+  }
+  
+  .btn {
+    height: 40px;
+    border-radius: 20px;
+    font-size: clamp(14px, 4.5vw, 18px);
+  }
+  
+  .button-row {
+    gap: 6px;
+  }
+  
+  .intensity-toggle {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .intensity-icon {
+    font-size: 12px;
+  }
+  
+  .intensity-text {
+    font-size: 8px;
+  }
+}
+
+/* 矮屏（≤400px）：压缩按钮 */
+@media screen and (max-height: 400px) {
+  .button-section {
+    margin-bottom: 10px;
+  }
+  
+  .btn {
+    height: 36px;
+    border-radius: 18px;
+    font-size: clamp(12px, 4vw, 16px);
+  }
+  
+  .button-row {
+    gap: 6px;
+  }
+  
+  .intensity-toggle {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .intensity-icon {
+    font-size: 12px;
+  }
+  
+  .intensity-text {
+    font-size: 8px;
+  }
+}
+
+/* 平板（≥768px）：放大按钮 */
+@media screen and (min-width: 768px) {
+  .button-section {
+    margin-bottom: 28px;
+  }
+  
+  .btn {
+    height: 64px;
+    font-size: 22px;
+  }
+  
+  .intensity-toggle {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .intensity-icon {
+    font-size: 20px;
+  }
+  
+  .intensity-text {
+    font-size: 12px;
+  }
+}
+
+/* ========== 底部提示区域 ========== */
+.tips {
+  text-align: center;
+}
+
+/* 提示文字 */
+.tip-text {
+  display: block;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--text-muted);         /* 弱化文字颜色 */
+  margin-bottom: 6px;
+}
+
+@media screen and (max-width: 375px) {
+  .tip-text {
+    font-size: clamp(10px, 2.5vw, 12px);
+    margin-bottom: 4px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .tip-text {
+    font-size: clamp(8px, 2.5vw, 10px);
+    margin-bottom: 3px;
+  }
+}
+
+@media screen and (max-height: 400px) {
+  .tip-text {
+    font-size: clamp(8px, 2.5vw, 10px);
+    margin-bottom: 2px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .tip-text {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+}

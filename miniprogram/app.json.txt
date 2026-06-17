@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",//导航栏文字颜色,black表示黑色,white表示白色
+    "navigationBarTitleText": "振动器",//导航栏标题,默认值为空字符串
+    "navigationStyle": "custom"//导航定义导航栏样式,custom表示隐藏导航栏,default表示默认
+    //由于导航栏已隐藏，故标题栏颜色和标题设置不生效
+  },
+  "style": "v2",//小程序样式,v2表示新样式,v1表示旧样式
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+  //懒加载组件,requiredComponents表示按需加载,initial表示初始加载所有组件,默认为initial
+}

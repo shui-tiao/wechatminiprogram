@@ -1,0 +1,85 @@
+<!-- 根容器：动态渐变背景，颜色由主题色变量控制 -->
+<view class="container" style="background: linear-gradient(135deg, {{themeColor}} 0%, {{themeColor2}} 100%);">
+  <!-- 卡片容器 -->
+  <view class="card">
+    <!-- 头部区域：标题和副标题 -->
+    <view class="header">
+      <text class="title">振动器</text>
+      <text class="subtitle">输入秒数体验振动</text>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <!-- 输入框外层包装，振动时添加 is-vibrating 样式 -->
+      <view class="input-wrapper {{isVibrating ? 'is-vibrating' : ''}}">
+        <!-- 复用上次时间按钮：仅在非振动状态、支持振动且有历史记录时显示 -->
+        <view class="reuse-icon {{showReuseButton && !isVibrating && supportVibrate ? 'visible' : 'hidden'}}" bindtap="reuseLastTime">
+          🔄
+        </view>
+        <!-- 未振动时：显示秒数输入框 -->
+        <view wx:if="{{!isVibrating}}" class="input-content">
+          <input
+            type="number"
+            class="time-input"
+            placeholder="请输入振动秒数"
+            value="{{seconds}}"
+            bindinput="onInput"
+            disabled="{{!supportVibrate}}"
+          />
+          <text class="unit">秒</text>
+        </view>
+        <!-- 振动中：显示进度条 -->
+        <view wx:else class="progress-content">
+          <view class="progress-bar">
+            <!-- 进度条填充部分，宽度和颜色由数据绑定控制 -->
+            <view class="progress-fill" style="width: {{progress}}%; background: linear-gradient(90deg, {{themeColor}} 0%, {{themeColor2}} 100%);">
+              <text class="progress-text" style="color: {{textColor}};">{{remainingSeconds}} 秒</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 按钮区域 -->
+    <view class="button-section">
+      <!-- 非振动状态 + 设备支持振动：显示"开始振动"按钮和强度切换 -->
+      <view wx:if="{{!isVibrating && supportVibrate}}" class="button-row">
+        <!-- 开始振动按钮：当秒数为空或 ≤0 时禁用 -->
+        <button
+          class="btn btn-start"
+          style="background: linear-gradient(135deg, {{themeColor}} 0%, {{themeColor2}} 100%); color: {{textColor}};"
+          bindtap="startVibration"
+          disabled="{{!seconds || seconds <= 0}}"
+        >
+          开始振动
+        </button>
+        <!-- 振动强度切换按钮：强/弱两档 -->
+        <view class="intensity-toggle" bindtap="toggleIntensity">
+          <text class="intensity-icon">{{vibrateIntensity === 'strong' ? '🔊' : '🔉'}}</text>
+          <text class="intensity-text">{{vibrateIntensity === 'strong' ? '强' : '弱'}}</text>
+        </view>
+      </view>
+      <!-- 非振动状态 + 设备不支持振动：显示禁用按钮 -->
+      <button
+        wx:elif="{{!isVibrating && !supportVibrate}}"
+        class="btn btn-start"
+        disabled="true"
+      >
+        设备不支持振动
+      </button>
+      <!-- 振动中：显示"停止振动"按钮 -->
+      <button
+        wx:else
+        class="btn btn-stop"
+        bindtap="manualStop"
+      >
+        停止振动
+      </button>
+    </view>
+
+    <!-- 底部提示区域 -->
+    <view class="tips">
+      <text class="tip-text">💡 本应用由AI生成</text>
+    </view>
+  </view>
+</view>

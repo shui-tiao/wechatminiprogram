@@ -1,0 +1,76 @@
+<!-- 导航栏根容器，支持外部传入的扩展类名 -->
+<view class="weui-navigation-bar {{extClass}}">
+  <!-- 导航栏内部容器，根据平台(iOS/Android)应用不同样式，支持自定义颜色、背景、显示样式、右侧内边距和安全区域顶部距离 -->
+  <view class="weui-navigation-bar__inner {{ios ? 'ios' : 'android'}}" style="color: {{color}}; background: {{background}}; {{displayStyle}}; {{innerPaddingRight}}; {{safeAreaTop}};">
+
+    <!-- 左侧按钮区域 -->
+    <view class='weui-navigation-bar__left' style="{{leftWidth}};">
+      <!-- 判断是否显示返回按钮或首页按钮 -->
+      <block wx:if="{{back || homeButton}}">
+        <!-- 返回上一页按钮 -->
+        <block wx:if="{{back}}">
+          <view class="weui-navigation-bar__buttons weui-navigation-bar__buttons_goback">
+            <!-- 返回按钮点击区域，带点击态效果 -->
+            <view
+              bindtap="back"
+              class="weui-navigation-bar__btn_goback_wrapper"
+              hover-class="weui-active"
+              hover-stay-time="100"
+              aria-role="button"
+              aria-label="返回"
+            >
+              <!-- 返回按钮图标 -->
+              <view class="weui-navigation-bar__button weui-navigation-bar__btn_goback"></view>
+            </view>
+          </view>
+        </block>
+        <!-- 返回首页按钮 -->
+        <block wx:if="{{homeButton}}">
+          <view class="weui-navigation-bar__buttons weui-navigation-bar__buttons_home">
+            <!-- 首页按钮点击区域，带点击态效果 -->
+            <view
+              bindtap="home"
+              class="weui-navigation-bar__btn_home_wrapper"
+              hover-class="weui-active"
+              aria-role="button"
+              aria-label="首页"
+            >
+              <!-- 首页按钮图标 -->
+              <view class="weui-navigation-bar__button weui-navigation-bar__btn_home"></view>
+            </view>
+          </view>
+        </block>
+      </block>
+      <!-- 左侧自定义内容插槽，当不显示返回/首页按钮时使用 -->
+      <block wx:else>
+        <slot name="left"></slot>
+      </block>
+    </view>
+
+    <!-- 标题区域 -->
+    <view class='weui-navigation-bar__center'>
+      <!-- 加载状态指示器 -->
+      <view wx:if="{{loading}}" class="weui-navigation-bar__loading" aria-role="alert">
+        <!-- 加载动画图标 -->
+        <view
+          class="weui-loading"
+          aria-role="img"
+          aria-label="加载中"
+        ></view>
+      </view>
+      <!-- 显示标题文本 -->
+      <block wx:if="{{title}}">
+        <text>{{title}}</text>
+      </block>
+      <!-- 标题自定义内容插槽，当不显示标题文本时使用 -->
+      <block wx:else>
+        <slot name="center"></slot>
+      </block>
+    </view>
+    
+    <!-- 右侧区域，用于放置自定义内容 -->
+    <view class='weui-navigation-bar__right'>
+      <slot name="right"></slot>
+    </view>
+  </view>
+</view>
