@@ -668,10 +668,31 @@ page {
   margin-bottom: 6px;
 }
 
+/* 系统触感提示（仅小米设备显示） */
+.tip-haptic {
+  display: block;
+  font-size: clamp(10px, 2.5vw, 11px);
+  color: #666666;  /* 使用固定深灰色确保可见性 */
+  margin-top: 4px;
+  line-height: 1.4;
+  padding: 0 12px;  /* 增加左右内边距防止文字贴边 */
+}
+
+/* 深色模式下使用更浅的颜色 */
+@media (prefers-color-scheme: dark) {
+  .tip-haptic {
+    color: #888888;
+  }
+}
+
 @media screen and (max-width: 375px) {
   .tip-text {
     font-size: clamp(10px, 2.5vw, 12px);
     margin-bottom: 4px;
+  }
+  
+  .tip-haptic {
+    font-size: clamp(8px, 2.5vw, 10px);
   }
 }
 
@@ -679,6 +700,10 @@ page {
   .tip-text {
     font-size: clamp(8px, 2.5vw, 10px);
     margin-bottom: 3px;
+  }
+  
+  .tip-haptic {
+    font-size: clamp(7px, 2.5vw, 9px);
   }
 }
 

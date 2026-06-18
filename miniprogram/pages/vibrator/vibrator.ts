@@ -1,3 +1,53 @@
+/**
+ * 振动器页面
+ * 提供振动时长设置和振动强度切换功能
+ * 
+ * 调试模式：当 DEBUG_MODE 为 true 时，会记录详细的振动日志
+ * 测试人员可通过微信开发者工具控制台查看日志，或调用 getDebugLogs() 获取日志内容
+ */
+// #region debug-point: 调试日志模块
+const DEBUG_MODE = true  // 调试模式开关，生产环境设为 false
+const logger = wx.getLogManager({ level: 1 })  // 日志管理器，level 1 记录所有日志
+const debugLogs: string[] = []  // 内存日志缓存，用于实时查看
+
+/**
+ * 记录调试日志
+ * @param tag 日志标签（如 [VIBRATE-API]、[DEVICE-CHECK]）
+ * @param message 日志内容
+ * @param data 附加数据对象
+ */
+function debugLog(tag: string, message: string, data?: object) {
+  if (!DEBUG_MODE) return
+  
+  const timestamp = new Date().toISOString()
+  const logEntry = `[${timestamp}] ${tag} ${message}${data ? ` | ${JSON.stringify(data)}` : ''}`
+  
+  // 写入微信日志管理器（可通过 wx.getLogManager 获取）
+  logger.log(logEntry)
+  
+  // 同时写入内存缓存（方便实时查看）
+  debugLogs.push(logEntry)
+  
+  // 控制台输出（开发者工具可见）
+  console.log(logEntry)
+}
+
+/**
+ * 获取所有调试日志（供测试人员调用）
+ * 使用方法：在微信开发者工具控制台输入 getCurrentPages()[0].getDebugLogs()
+ */
+function getDebugLogs(): string[] {
+  return debugLogs.slice()
+}
+
+/**
+ * 清空调试日志缓存
+ */
+function clearDebugLogs(): void {
+  debugLogs.length = 0
+}
+// #endregion
+
 Page({
   /**
    * 页面的初始数据
@@ -18,6 +68,8 @@ Page({
     containerBg: '',           // 容器背景渐变
     btnBg: '',                // 按钮背景渐变
     progressBg: '',           // 进度条背景渐变
+    platform: '',             // 设备平台（android/ios）
+    isXiaomi: false,          // 是否为小米设备
   },
 
   timer: null as ReturnType<typeof setInterval> | null,      // 倒计时定时器
@@ -38,17 +90,46 @@ Page({
    * 检查设备是否支持振动功能
    */
   checkVibrateSupport() {
+    // #region debug-point: H2 设备检测日志
+    debugLog('[DEVICE-CHECK]', '开始检测设备振动支持')
+    // #endregion
+    
     try {
       const deviceInfo = wx.getDeviceInfo()
       const platform = (deviceInfo.platform || '').toLowerCase()
       const model = deviceInfo.model || '未知设备'
 
+      // #region debug-point: H2 设备检测结果
+      debugLog('[DEVICE-CHECK]', '设备信息获取成功', {
+        platform,
+        model,
+        SDKVersion: wx.getAppBaseInfo().SDKVersion,
+      })
+      // #endregion
+
       const unsupportedPlatforms = ['windows', 'mac', 'linux', 'pc']
       const isUnsupported = unsupportedPlatforms.some(p => platform.includes(p))
+
+      // 检测是否为小米设备（型号中包含常见小米标识）
+      // 匹配规则：xiaomi/redmi/poco、Mi+数字、纯数字开头+字母组合（如 24122RKC7C）
+      const isXiaomi = /xiaomi|redmi|poco|mi\s*\d|^\d+[a-z]/i.test(model)
+
+      // #region debug-point: H2 设备判断结果
+      debugLog('[DEVICE-CHECK]', '振动支持判断结果', {
+        isUnsupported,
+        supportVibrate: !isUnsupported,
+        isXiaomi,
+        isXiaomiRegex: /^\d+[a-z]/i.test(model),
+        model,
+        unsupportedPlatforms,
+      })
+      // #endregion
 
       this.setData({
         supportVibrate: !isUnsupported,
         deviceModel: model,
+        platform: platform,
+        isXiaomi: isXiaomi,
       })
 
       if (isUnsupported) {
@@ -62,7 +143,10 @@ Page({
           })
         }, 500)
       }
-    } catch {
+    } catch (err) {
+      // #region debug-point: H2 设备检测异常
+      debugLog('[DEVICE-CHECK]', '设备检测异常', { error: String(err) })
+      // #endregion
       this.setData({
         supportVibrate: true,
         deviceModel: '未知设备',
@@ -246,12 +330,24 @@ Page({
    */
   startVibration() {
     const seconds = parseInt(this.data.seconds)
+    
+    // #region debug-point: H1 振动启动日志
+    debugLog('[VIBRATE-START]', '用户点击开始振动', {
+      inputSeconds: this.data.seconds,
+      parsedSeconds: seconds,
+      intensity: this.data.vibrateIntensity,
+      deviceModel: this.data.deviceModel,
+    })
+    // #endregion
+    
     if (!seconds || seconds <= 0) {
       wx.showToast({
         title: '请输入有效秒数',
         icon: 'none',
       })
-
+      // #region debug-point: H1 输入验证失败
+      debugLog('[VIBRATE-START]', '输入验证失败：无效秒数')
+      // #endregion
       return
     }
 
@@ -264,18 +360,32 @@ Page({
       showReuseButton: true,
     })
 
+    // #region debug-point: H1 首次振动 API 调用
+    const vibrateApi = this.data.vibrateIntensity === 'strong' ? 'wx.vibrateLong' : 'wx.vibrateShort'
+    debugLog('[VIBRATE-API]', `调用 ${vibrateApi}`, { intensity: this.data.vibrateIntensity })
+    
     if (this.data.vibrateIntensity === 'strong') {
       wx.vibrateLong({
-        success: () => {},
-        fail: () => {},
+        success: () => {
+          debugLog('[VIBRATE-API]', 'wx.vibrateLong 成功')
+        },
+        fail: (err) => {
+          debugLog('[VIBRATE-API]', 'wx.vibrateLong 失败', { error: JSON.stringify(err) })
+        },
       })
     } else {
       wx.vibrateShort({
         type: 'light',
-        success: () => {},
-        fail: () => {},
+        success: () => {
+          debugLog('[VIBRATE-API]', 'wx.vibrateShort 成功')
+        },
+        fail: (err) => {
+          debugLog('[VIBRATE-API]', 'wx.vibrateShort 失败', { error: JSON.stringify(err) })
+        },
       })
     }
+    // #endregion
+    
     this.startTimers(seconds)
   },
 
@@ -286,26 +396,65 @@ Page({
   startTimers(totalSeconds: number) {
     let remaining = totalSeconds
     const intensity = this.data.vibrateIntensity
+    let loopCount = 0  // 振动循环计数器
+
+    // #region debug-point: H3 定时器启动日志
+    debugLog('[VIBRATE-LOOP]', '启动振动循环定时器', {
+      totalSeconds,
+      intensity,
+      interval: intensity === 'strong' ? 350 : 150,
+    })
+    // #endregion
 
     /**
      * 振动循环函数
      */
     const vibrateLoop = () => {
-      if (this.isStopped) return
+      if (this.isStopped) {
+        // #region debug-point: H3 循环中断日志
+        debugLog('[VIBRATE-LOOP]', '振动循环被中断', { loopCount, reason: 'isStopped=true' })
+        // #endregion
+        return
+      }
+      
+      loopCount++
+      const vibrateApi = intensity === 'strong' ? 'wx.vibrateLong' : 'wx.vibrateShort'
+      
+      // #region debug-point: H1/H3 循环振动 API 调用
+      debugLog('[VIBRATE-LOOP]', `循环 #${loopCount} 调用 ${vibrateApi}`, {
+        remainingSeconds: remaining,
+        loopCount,
+      })
+      
       if (intensity === 'strong') {
         wx.vibrateLong({
-          success: () => {},
-          fail: () => {},
+          success: () => {
+            debugLog('[VIBRATE-LOOP]', `循环 #${loopCount} wx.vibrateLong 成功`)
+          },
+          fail: (err) => {
+            debugLog('[VIBRATE-LOOP]', `循环 #${loopCount} wx.vibrateLong 失败`, {
+              error: JSON.stringify(err),
+              loopCount,
+            })
+          },
         })
         this.vibrateTimer = setTimeout(vibrateLoop, 350) as unknown as ReturnType<typeof setInterval>
       } else {
         wx.vibrateShort({
           type: 'light',
-          success: () => {},
-          fail: () => {},
+          success: () => {
+            debugLog('[VIBRATE-LOOP]', `循环 #${loopCount} wx.vibrateShort 成功`)
+          },
+          fail: (err) => {
+            debugLog('[VIBRATE-LOOP]', `循环 #${loopCount} wx.vibrateShort 失败`, {
+              error: JSON.stringify(err),
+              loopCount,
+            })
+          },
         })
         this.vibrateTimer = setTimeout(vibrateLoop, 150) as unknown as ReturnType<typeof setInterval>
       }
+      // #endregion
     }
     vibrateLoop()
 
@@ -315,6 +464,9 @@ Page({
       remaining--
 
       if (remaining <= 0) {
+        // #region debug-point: H3 倒计时结束日志
+        debugLog('[VIBRATE-LOOP]', '倒计时结束，自动停止振动', { totalLoopCount: loopCount })
+        // #endregion
         this.isStopped = true
         this.stopVibration(true)
       } else {
@@ -332,6 +484,13 @@ Page({
    * 手动停止振动
    */
   manualStop() {
+    // #region debug-point: H3 手动停止日志
+    debugLog('[VIBRATE-STOP]', '用户手动停止振动', {
+      wasVibrating: this.data.isVibrating,
+      remainingSeconds: this.data.remainingSeconds,
+    })
+    // #endregion
+    
     this.isStopped = true
     if (this.timer) {
       clearInterval(this.timer)
@@ -346,6 +505,10 @@ Page({
       remainingSeconds: 0,
       progress: 0,
     })
+    
+    // #region debug-point: H3 停止完成日志
+    debugLog('[VIBRATE-STOP]', '振动已手动停止')
+    // #endregion
   },
 
   /**
@@ -353,6 +516,14 @@ Page({
    * @param isFinished 是否正常完成
    */
   stopVibration(isFinished = false) {
+    // #region debug-point: H3 自动停止日志
+    debugLog('[VIBRATE-STOP]', '振动停止', {
+      isFinished,
+      wasVibrating: this.data.isVibrating,
+      remainingSeconds: this.data.remainingSeconds,
+    })
+    // #endregion
+    
     if (this.timer) {
       clearInterval(this.timer)
       this.timer = null
@@ -370,11 +541,18 @@ Page({
     })
 
     if (isFinished) {
+      // #region debug-point: H1 结束提示振动
+      debugLog('[VIBRATE-API]', '振动结束提示：调用 wx.vibrateShort')
       wx.vibrateShort({
         type: 'light',
-        success: () => {},
-        fail: () => {},
+        success: () => {
+          debugLog('[VIBRATE-API]', '结束提示振动成功')
+        },
+        fail: (err) => {
+          debugLog('[VIBRATE-API]', '结束提示振动失败', { error: JSON.stringify(err) })
+        },
       })
+      // #endregion
       wx.showModal({
         title: '振动结束',
         content: '振动已完成！',
@@ -399,4 +577,34 @@ Page({
       this.vibrateTimer = null
     }
   },
+  
+  // #region debug-point: 测试人员日志获取接口
+  /**
+   * 获取所有调试日志（供测试人员调用）
+   * 使用方法：在微信开发者工具控制台输入 getCurrentPages()[0].getDebugLogs()
+   * 或在真机调试时通过 vConsole 查看
+   * @returns 日志数组
+   */
+  getDebugLogs(): string[] {
+    return debugLogs.slice()
+  },
+  
+  /**
+   * 清空调试日志缓存
+   * 使用方法：在微信开发者工具控制台输入 getCurrentPages()[0].clearDebugLogs()
+   */
+  clearDebugLogs(): void {
+    debugLogs.length = 0
+    console.log('[DEBUG] 日志缓存已清空')
+  },
+  
+  /**
+   * 导出调试日志为文本（方便复制）
+   * 使用方法：在微信开发者工具控制台输入 getCurrentPages()[0].exportDebugLogs()
+   * @returns 日志文本（换行分隔）
+   */
+  exportDebugLogs(): string {
+    return debugLogs.join('\n')
+  },
+  // #endregion
 })
