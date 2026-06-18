@@ -7,7 +7,10 @@ App<IAppOption>({
   /**
    * 全局数据对象，可在所有页面中访问
    */
-  globalData: {},
+  globalData: {
+    debugLogs: [],        // 调试日志缓存
+    debugLogsToShare: '', // 待分享的日志内容
+  },
   
   /**
    * 小程序初始化生命周期函数
@@ -25,12 +28,18 @@ App<IAppOption>({
    * 当小程序从后台进入前台显示时触发
    */
   onShow() {
-    // 用户首次打开小程序时展示功能选择界面
-    const hasVisitedFeatureSelect = wx.getStorageSync('hasVisitedFeatureSelect')
-    if (!hasVisitedFeatureSelect) {
-      wx.reLaunch({
-        url: '/pages/feature-select/feature-select',
-      })
-    }
+    // 标记用户已访问过功能选择页面
+    wx.setStorageSync('hasVisitedFeatureSelect', 'true')
+  },
+
+  /**
+   * 页面不存在时的处理函数
+   * 当打开不存在的页面时触发（如旧版本缓存的页面路径）
+   */
+  onPageNotFound(res) {
+    // 跳转到功能选择页面（首页）
+    wx.reLaunch({
+      url: '/pages/feature-select/feature-select',
+    })
   },
 })
