@@ -20,7 +20,7 @@ page {
 @media (prefers-color-scheme: dark) {
   page {
     /* 深色模式 - 主题色彩变量覆盖 */
-    --bg-primary: #1a1a1a;    /* 主背景色 - 近黑 */
+    --bg-primary: #000000;    /* 主背景色 - 纯黑 */
     --bg-secondary: #2a2a2a;  /* 次背景色 - 深灰 */
     --text-primary: #ffffff;  /* 主文字色 - 纯白 */
     --text-secondary: #cccccc;/* 次文字色 - 浅灰 */

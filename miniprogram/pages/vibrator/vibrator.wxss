@@ -6,10 +6,37 @@ page {
   width: 100%;
 }
 
-/* 深色模式：页面背景改为纯黑 */
+/* 深色模式：使用 !important 覆盖 WXML 内联样式 */
 @media (prefers-color-scheme: dark) {
   page {
     background: #000000;
+  }
+
+  /* 深色模式下容器背景覆盖为纯黑 */
+  .container {
+    background: #000000 !important;
+    color: #ffffff !important;
+  }
+
+  /* 深色模式下按钮使用亮色渐变 */
+  .btn-start {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #ffffff !important;
+  }
+
+  /* 深色模式下进度条填充使用亮色渐变 */
+  .progress-fill {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  }
+
+  /* 深色模式下进度条轨道使用深灰可见色 */
+  .progress-bar {
+    background: #3a3a3a;
+  }
+
+  /* 深色模式下强度切换按钮使用深灰背景 */
+  .intensity-toggle {
+    background: #2a2a2a;
   }
 }
 
@@ -501,7 +528,7 @@ page {
   line-height: 1;
 }
 
-/* 开始按钮：文字白色（背景由内联 style 控制） */
+/* 开始按钮：文字白色（背景由 WXML 内联 style 控制） */
 .btn-start {
   color: #ffffff;
 }

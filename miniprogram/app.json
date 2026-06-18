@@ -1,15 +1,15 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/feature-select/feature-select",
+    "pages/vibrator/vibrator",
     "pages/logs/logs"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "振动器",
-    "navigationStyle": "custom"
-    
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "振动工具"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true
 }

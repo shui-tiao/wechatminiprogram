@@ -1,0 +1,38 @@
+<!-- 功能选择页面：用户首次进入时的入口界面 -->
+<view class="page">
+  <!-- 顶部标题区域：应用名称和引导文字 -->
+  <view class="header">
+    <text class="app-title">功能大厅</text>
+    <text class="app-subtitle">请选择一个功能开始使用</text>
+  </view>
+
+  <!-- 功能选项列表：循环渲染功能卡片 -->
+  <view class="feature-list">
+    <!-- 功能卡片：点击后导航到对应功能页面 -->
+    <view
+      class="feature-card"
+      wx:for="{{features}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onFeatureTap"
+      hover-class="feature-card-hover"
+    >
+      <!-- 功能图标容器：背景色由主题色衍生（22 表示 13% 透明度） -->
+      <view class="feature-icon" style="background: {{item.color}}22;">
+        <text class="feature-emoji">{{item.icon}}</text>
+      </view>
+      <!-- 功能信息：标题和描述 -->
+      <view class="feature-info">
+        <text class="feature-title">{{item.title}}</text>
+        <text class="feature-desc">{{item.desc}}</text>
+      </view>
+      <!-- 右侧箭头指示器 -->
+      <view class="feature-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 底部提示区域 -->
+  <view class="footer">
+    <text class="footer-text">更多功能敬请期待</text>
+  </view>
+</view>

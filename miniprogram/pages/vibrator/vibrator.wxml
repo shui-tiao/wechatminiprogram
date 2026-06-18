@@ -1,5 +1,5 @@
-<!-- 根容器：动态渐变背景，颜色由主题色变量控制 -->
-<view class="container" style="background: linear-gradient(135deg, {{themeColor}} 0%, {{themeColor2}} 100%);">
+<!-- 根容器：动态渐变背景，颜色由 data 绑定控制 -->
+<view class="container" style="background: {{containerBg}}; color: {{textColor}};">
   <!-- 卡片容器 -->
   <view class="card">
     <!-- 头部区域：标题和副标题 -->
@@ -32,7 +32,7 @@
         <view wx:else class="progress-content">
           <view class="progress-bar">
             <!-- 进度条填充部分，宽度和颜色由数据绑定控制 -->
-            <view class="progress-fill" style="width: {{progress}}%; background: linear-gradient(90deg, {{themeColor}} 0%, {{themeColor2}} 100%);">
+            <view class="progress-fill" style="width: {{progress}}%; background: {{progressBg}};">
               <text class="progress-text" style="color: {{textColor}};">{{remainingSeconds}} 秒</text>
             </view>
           </view>
@@ -47,7 +47,7 @@
         <!-- 开始振动按钮：当秒数为空或 ≤0 时禁用 -->
         <button
           class="btn btn-start"
-          style="background: linear-gradient(135deg, {{themeColor}} 0%, {{themeColor2}} 100%); color: {{textColor}};"
+          style="background: {{btnBg}}; color: {{textColor}};"
           bindtap="startVibration"
           disabled="{{!seconds || seconds <= 0}}"
         >

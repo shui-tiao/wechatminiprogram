@@ -1,0 +1,228 @@
+/**
+ * 功能选择页面样式
+ * 包含页面布局、功能卡片、响应式适配等样式定义
+ */
+
+/* ========== 页面根元素：CSS 变量定义 ========== */
+page {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  /* 浅色模式 - 主题色彩变量定义 */
+  --bg-primary: #ffffff;      /* 主背景色 - 白色 */
+  --bg-secondary: #f5f5f5;    /* 次背景色 - 浅灰（卡片背景） */
+  --text-primary: #333333;    /* 主文字色 - 深灰 */
+  --text-secondary: #666666;  /* 次文字色 - 中灰 */
+  --text-muted: #999999;      /* 弱化文字色 - 浅灰（提示文字） */
+  --border-color: #e0e0e0;    /* 边框颜色 - 极浅灰 */
+  --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);  /* 卡片阴影 */
+}
+
+/* 深色模式媒体查询 - 根据系统偏好自动切换 */
+@media (prefers-color-scheme: dark) {
+  page {
+    /* 深色模式 - 主题色彩变量覆盖 */
+    --bg-primary: #000000;    /* 主背景色 - 纯黑 */
+    --bg-secondary: #2a2a2a;  /* 次背景色 - 深灰 */
+    --text-primary: #ffffff;  /* 主文字色 - 纯白 */
+    --text-secondary: #cccccc;/* 次文字色 - 浅灰 */
+    --text-muted: #666666;    /* 弱化文字色 - 中灰 */
+    --border-color: #3a3a3a;  /* 边框颜色 - 深灰 */
+    --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);  /* 加深卡片阴影 */
+  }
+}
+
+/* ========== 页面容器：全屏布局，适配安全区域 ========== */
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 24px;
+  padding-top: calc(40px + env(safe-area-inset-top));      /* 顶部安全区域（刘海屏） */
+  padding-bottom: calc(40px + env(safe-area-inset-bottom)); /* 底部安全区域 */
+  box-sizing: border-box;
+}
+
+/* ========== 顶部标题区域 ========== */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* 应用主标题 */
+.app-title {
+  display: block;
+  font-size: clamp(28px, 7.5vw, 36px);  /* 流式字体：最小28px，最大36px */
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: 1px;                  /* 字间距 */
+}
+
+/* 应用副标题（引导文字） */
+.app-subtitle {
+  display: block;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: var(--text-muted);
+}
+
+/* ========== 功能选项列表 ========== */
+.feature-list {
+  flex: 1;                               /* 占满剩余空间 */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;                             /* 卡片间距 */
+}
+
+/* 功能卡片：圆角背景 + 阴影 */
+.feature-card {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 18px 20px;
+  gap: 16px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease;       /* 点击缩放动画 */
+  cursor: pointer;
+}
+
+/* 功能卡片按下态：缩小 + 半透明 */
+.feature-card-hover {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 功能图标容器：圆角方形背景 */
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;                        /* 不参与伸缩，保持固定尺寸 */
+}
+
+/* 功能图标 emoji */
+.feature-emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* 功能信息区域：标题 + 描述 */
+.feature-info {
+  flex: 1;                               /* 占据剩余空间 */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;                          /* 允许文字截断 */
+}
+
+/* 功能标题 */
+.feature-title {
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 功能描述 */
+.feature-desc {
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* 右侧箭头指示器 */
+.feature-arrow {
+  font-size: 24px;
+  color: var(--text-muted);
+  font-weight: 300;
+  flex-shrink: 0;                        /* 不参与伸缩 */
+  margin-left: 4px;
+}
+
+/* ========== 底部提示区域 ========== */
+.footer {
+  text-align: center;
+  padding-top: 32px;
+}
+
+.footer-text {
+  font-size: clamp(11px, 2.8vw, 13px);
+  color: var(--text-muted);
+}
+
+/* ========== 响应式适配：小屏手机（≤375px） ========== */
+@media screen and (max-width: 375px) {
+  .page {
+    padding: 24px 16px;
+    padding-top: calc(24px + env(safe-area-inset-top));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .header {
+    margin-bottom: 28px;
+  }
+  .feature-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+  }
+  .feature-emoji {
+    font-size: 24px;
+  }
+}
+
+/* ========== 响应式适配：极小屏（≤320px） ========== */
+@media screen and (max-width: 320px) {
+  .page {
+    padding: 16px 12px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  .header {
+    margin-bottom: 20px;
+  }
+  .feature-card {
+    padding: 12px 12px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .feature-emoji {
+    font-size: 20px;
+  }
+}
+
+/* ========== 响应式适配：平板及以上（≥768px） ========== */
+@media screen and (min-width: 768px) {
+  .page {
+    padding: 60px 40px;
+    padding-top: calc(60px + env(safe-area-inset-top));
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    max-width: 500px;                    /* 限制最大宽度 */
+    margin: 0 auto;                      /* 水平居中 */
+  }
+  .feature-card {
+    padding: 22px 24px;
+  }
+  .feature-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+  }
+  .feature-emoji {
+    font-size: 32px;
+  }
+}

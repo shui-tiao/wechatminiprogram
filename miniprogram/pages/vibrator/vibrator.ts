@@ -15,11 +15,15 @@ Page({
     supportVibrate: true,     // 设备是否支持振动
     deviceModel: '',          // 设备型号
     vibrateIntensity: 'strong', // 振动强度：strong/weak
+    containerBg: '',           // 容器背景渐变
+    btnBg: '',                // 按钮背景渐变
+    progressBg: '',           // 进度条背景渐变
   },
 
   timer: null as ReturnType<typeof setInterval> | null,      // 倒计时定时器
   vibrateTimer: null as ReturnType<typeof setTimeout> | null,  // 振动循环定时器
   isStopped: false,           // 是否已停止
+  isDarkTheme: false,          // 是否暗色模式
 
   /**
    * 生命周期函数--监听页面加载
@@ -35,10 +39,9 @@ Page({
    */
   checkVibrateSupport() {
     try {
-      // @ts-ignore
-      const systemInfo = wx.getSystemInfoSync()
-      const platform = (systemInfo.platform || '').toLowerCase()
-      const model = systemInfo.model || '未知设备'
+      const deviceInfo = wx.getDeviceInfo()
+      const platform = (deviceInfo.platform || '').toLowerCase()
+      const model = deviceInfo.model || '未知设备'
 
       const unsupportedPlatforms = ['windows', 'mac', 'linux', 'pc']
       const isUnsupported = unsupportedPlatforms.some(p => platform.includes(p))
@@ -69,8 +72,10 @@ Page({
 
   /**
    * 生成随机主题颜色
+   * 无论当前主题，都生成随机颜色保存到 themeColor/themeColor2，供主题切换时使用
    */
   generateRandomTheme() {
+    // 先生成随机颜色（无论当前主题）
     const hue = Math.floor(Math.random() * 360)
     const saturation = Math.floor(Math.random() * 30) + 60
     const lightness1 = Math.floor(Math.random() * 15) + 45
@@ -78,15 +83,132 @@ Page({
 
     const color1 = `hsl(${hue}, ${saturation}%, ${lightness1}%)`
     const color2 = `hsl(${hue}, ${saturation}%, ${lightness2}%)`
+    const bg = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`
+    const progressBg = `linear-gradient(90deg, ${color1} 0%, ${color2} 100%)`
 
+    // HSL 转 HEX 工具函数
+    const hslToHex = (h: number, s: number, l: number): string => {
+      s /= 100
+      l /= 100
+      const a = s * Math.min(l, 1 - l)
+      const f = (n: number) => {
+        const k = (n + h / 30) % 12
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+        return Math.round(255 * color).toString(16).padStart(2, '0')
+      }
+      return `#${f(0)}${f(8)}${f(4)}`
+    }
+
+    const hexColor = hslToHex(hue, saturation, lightness1)
     const avgLightness = (lightness1 + lightness2) / 2
     const textColor = avgLightness < 50 ? '#ffffff' : '#333333'
+    const navTextColor = lightness1 < 50 ? '#ffffff' : '#000000'
 
+    // 保存随机颜色到 data（供主题切换时恢复）
     this.setData({
       themeColor: color1,
       themeColor2: color2,
-      textColor: textColor,
     })
+
+    // 根据当前主题设置显示颜色
+    const res = wx.getAppBaseInfo()
+    const isDark = res.theme === 'dark'
+    this.isDarkTheme = isDark
+
+    if (isDark) {
+      // 暗色模式：纯黑背景 + 白色文字
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#000000',
+      })
+      this.setData({
+        textColor: '#ffffff',
+        containerBg: '#000000',
+        btnBg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        progressBg: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+      })
+    } else {
+      // 亮色模式：显示随机渐变色
+      wx.setNavigationBarColor({
+        frontColor: navTextColor,
+        backgroundColor: hexColor,
+      })
+      this.setData({
+        textColor: textColor,
+        containerBg: bg,
+        btnBg: bg,
+        progressBg: progressBg,
+      })
+    }
+  },
+
+  /**
+   * 根据主题设置页面颜色
+   * @param isDark 是否为暗色模式
+   */
+  setThemeColor(isDark: boolean) {
+    this.isDarkTheme = isDark
+
+    if (isDark) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#000000',
+      })
+      this.setData({
+        textColor: '#ffffff',
+        containerBg: '#000000',
+        btnBg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        progressBg: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+      })
+    } else {
+      const themeColor = this.data.themeColor
+      const themeColor2 = this.data.themeColor2
+      const hslMatch = themeColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/)
+      if (hslMatch) {
+        const [, h, s, l] = hslMatch.map(Number)
+        const originalL = l
+        const hex = (() => {
+          const sNorm = s / 100
+          const lNorm = l / 100
+          const a = sNorm * Math.min(lNorm, 1 - lNorm)
+          const f = (n: number) => {
+            const k = (n + h / 30) % 12
+            const color = lNorm - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+            return Math.round(255 * color).toString(16).padStart(2, '0')
+          }
+          return `#${f(0)}${f(8)}${f(4)}`
+        })()
+        wx.setNavigationBarColor({
+          frontColor: originalL < 50 ? '#ffffff' : '#000000',
+          backgroundColor: hex,
+        })
+        const bg = `linear-gradient(135deg, ${themeColor} 0%, ${themeColor2} 100%)`
+        const progressBg = `linear-gradient(90deg, ${themeColor} 0%, ${themeColor2} 100%)`
+        const textColor = originalL < 50 ? '#ffffff' : '#333333'
+        this.setData({
+          textColor: textColor,
+          containerBg: bg,
+          btnBg: bg,
+          progressBg: progressBg,
+        })
+      }
+    }
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    const res = wx.getAppBaseInfo()
+    this.setThemeColor(res.theme === 'dark')
+  },
+
+  /**
+   * 监听系统主题变化，实时更新导航栏和页面颜色
+   * @param e 主题变化事件，包含 theme 属性
+   */
+  onThemeChange(e: any) {
+    this.setThemeColor(e.theme === 'dark')
   },
 
   /**
