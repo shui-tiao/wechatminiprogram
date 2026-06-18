@@ -668,6 +668,19 @@ page {
   margin-bottom: 6px;
 }
 
+/* 设备不支持振动的警告提示 */
+.tip-warning {
+  color: #ff9500 !important;  /* 橙色警告色 */
+  font-weight: 500;
+}
+
+/* 深色模式下使用黄色警告色 */
+@media (prefers-color-scheme: dark) {
+  .tip-warning {
+    color: #ffb340 !important;
+  }
+}
+
 /* 系统触感提示（仅小米设备显示） */
 .tip-haptic {
   display: block;

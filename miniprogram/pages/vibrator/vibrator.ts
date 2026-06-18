@@ -99,6 +99,7 @@ Page({
     progressBg: '',           // 进度条背景渐变
     platform: '',             // 设备平台（android/ios）
     isXiaomi: false,          // 是否为小米设备
+    vibrateTip: '',           // 设备不支持振动时的提示（iPad/iPod/老款iPhone）
   },
 
   timer: null as ReturnType<typeof setInterval> | null,      // 倒计时定时器
@@ -117,6 +118,8 @@ Page({
 
   /**
    * 检查设备是否支持振动功能
+   * 支持列表：iPhone 7及以上、Android手机
+   * 不支持列表：iPad、iPod、老款iPhone、Windows/Mac/Linux电脑
    */
   checkVibrateSupport() {
     // #region debug-point: H2 设备检测日志
@@ -136,41 +139,37 @@ Page({
       })
       // #endregion
 
+      // 不支持振动的平台
       const unsupportedPlatforms = ['windows', 'mac', 'linux', 'pc']
-      const isUnsupported = unsupportedPlatforms.some(p => platform.includes(p))
+      const isUnsupportedPlatform = unsupportedPlatforms.some(p => platform.includes(p))
 
-      // 检测是否为小米设备（型号中包含常见小米标识）
-      // 匹配规则：xiaomi/redmi/poco、Mi+数字、纯数字开头+字母组合（如 24122RKC7C）
-      const isXiaomi = /xiaomi|redmi|poco|mi\s*\d|^\d+[a-z]/i.test(model)
+      // 不支持振动的设备类型
+      const isIPad = /ipad/i.test(model)           // iPad全系没有震动马达
+      const isIPod = /ipod/i.test(model)           // iPod没有震动功能
 
       // #region debug-point: H2 设备判断结果
       debugLog('[DEVICE-CHECK]', '振动支持判断结果', {
-        isUnsupported,
-        supportVibrate: !isUnsupported,
-        isXiaomi,
-        isXiaomiRegex: /^\d+[a-z]/i.test(model),
+        isUnsupported: isUnsupportedPlatform || isIPad || isIPod,
+        supportVibrate: !isUnsupportedPlatform && !isIPad && !isIPod,
+        isIPad,
+        isIPod,
         model,
         unsupportedPlatforms,
       })
       // #endregion
 
       this.setData({
-        supportVibrate: !isUnsupported,
+        supportVibrate: !isUnsupportedPlatform && !isIPad && !isIPod,
         deviceModel: model,
         platform: platform,
-        isXiaomi: isXiaomi,
+        isXiaomi: /xiaomi|redmi|poco|mi\s*\d|^\d+[a-z]/i.test(model),
       })
 
-      if (isUnsupported) {
-        setTimeout(() => {
-          wx.showModal({
-            title: '设备不支持',
-            content: `您的设备${model} ${platform}不支持振动功能，推荐使用手机体验。`,
-            showCancel: false,
-            success: () => {},
-            fail: () => {},
-          })
-        }, 500)
+      // iPad 和 iPod 设备提示（不弹窗，在界面上显示）
+      if (isIPad) {
+        this.setData({ vibrateTip: '📱 当前设备为iPad，不支持振动功能' })
+      } else if (isIPod) {
+        this.setData({ vibrateTip: '🎵 当前设备为iPod，不支持振动功能' })
       }
     } catch (err) {
       // #region debug-point: H2 设备检测异常
