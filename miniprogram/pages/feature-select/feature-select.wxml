@@ -1,13 +1,13 @@
 <!-- 功能选择页面：用户首次进入时的入口界面 -->
 <view class="page">
-  <!-- 顶部标题区域：应用名称和引导文字 -->
-  <view class="header">
-    <text class="app-title">功能大厅</text>
-    <text class="app-subtitle">请选择一个功能开始使用</text>
-  </view>
-
   <!-- 功能选项列表：循环渲染功能卡片 -->
-  <view class="feature-list">
+  <view class="feature-list" wx:if="{{!showDebugLogs}}">
+    <!-- 顶部标题区域：应用名称和引导文字 -->
+    <view class="header">
+      <text class="app-title">功能大厅</text>
+      <text class="app-subtitle">请选择一个功能开始使用</text>
+    </view>
+
     <!-- 功能卡片：点击后导航到对应功能页面 -->
     <view
       class="feature-card"
@@ -29,10 +29,26 @@
       <!-- 右侧箭头指示器 -->
       <view class="feature-arrow">›</view>
     </view>
+
+    <!-- 底部提示区域 -->
+    <view class="footer" bindtap="onDebugModeTap">
+      <text class="footer-text">更多功能敬请期待</text>
+    </view>
   </view>
 
-  <!-- 底部提示区域 -->
-  <view class="footer">
-    <text class="footer-text">更多功能敬请期待</text>
+  <!-- 调试日志查看器 -->
+  <view class="debug-logs-container" wx:if="{{showDebugLogs}}">
+    <view class="debug-logs-header">
+      <text class="debug-logs-title">调试日志</text>
+      <text class="debug-logs-hint">长按文本可复制</text>
+    </view>
+    <textarea
+      class="debug-logs-textarea"
+      value="{{debugLogsContent}}"
+      disabled
+      placeholder="暂无日志"
+      maxlength="-1"
+    ></textarea>
+    <button class="debug-logs-close-btn" bindtap="onCloseDebugLogs" type="primary">关闭并退出调试</button>
   </view>
 </view>

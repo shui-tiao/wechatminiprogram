@@ -17,6 +17,8 @@ Page({
         color: '#667eea',         // 主题色（用于图标背景）
       },
     ],
+    showDebugLogs: false,        // 是否显示日志查看器
+    debugLogsContent: '',        // 日志内容
   },
 
   /**
@@ -55,5 +57,93 @@ Page({
         url: '/pages/vibrator/vibrator',
       })
     }
+  },
+
+  /**
+   * 点击"更多功能敬请期待"时弹出调试模式选择
+   */
+  onDebugModeTap() {
+    wx.showModal({
+      title: '调试模式',
+      content: '是否进入调试模式？',
+      confirmText: '进入',
+      cancelText: '退出',
+      success: (res) => {
+        if (res.confirm) {
+          // 进入调试模式
+          wx.setStorageSync('debugMode', true)
+          wx.showToast({
+            title: '已开启调试模式',
+            icon: 'none',
+            duration: 1500,
+          })
+        } else if (res.cancel) {
+          // 退出调试模式前，询问是否复制日志
+          this.promptCopyLogsBeforeExit()
+        }
+      },
+    })
+  },
+
+  /**
+   * 退出调试模式前询问是否导出日志
+   */
+  promptCopyLogsBeforeExit() {
+    wx.showModal({
+      title: '退出调试模式',
+      content: '是否导出调试日志？',
+      confirmText: '导出',
+      cancelText: '不导出',
+      success: (res) => {
+        if (res.confirm) {
+          // 从全局数据获取日志
+          const app = getApp()
+          const globalLogs = app.globalData.debugLogs || []
+          const allLogs = globalLogs.join('\n')
+          
+          if (allLogs) {
+            // 显示日志查看器
+            this.setData({
+              showDebugLogs: true,
+              debugLogsContent: allLogs,
+            })
+          } else {
+            wx.showToast({
+              title: '暂无调试日志',
+              icon: 'none',
+              duration: 1500,
+            })
+            // 关闭调试模式
+            wx.setStorageSync('debugMode', false)
+            wx.showToast({
+              title: '已关闭调试模式',
+              icon: 'none',
+              duration: 1500,
+            })
+          }
+        } else {
+          // 关闭调试模式
+          wx.setStorageSync('debugMode', false)
+          wx.showToast({
+            title: '已关闭调试模式',
+            icon: 'none',
+            duration: 1500,
+          })
+        }
+      },
+    })
+  },
+
+  /**
+   * 关闭日志查看器
+   */
+  onCloseDebugLogs() {
+    this.setData({
+      showDebugLogs: false,
+      debugLogsContent: '',
+    })
+    // 清空全局日志
+    const app = getApp()
+    app.globalData.debugLogs = []
   },
 })

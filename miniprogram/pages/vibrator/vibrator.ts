@@ -2,35 +2,52 @@
  * 振动器页面
  * 提供振动时长设置和振动强度切换功能
  * 
- * 调试模式：当 DEBUG_MODE 为 true 时，会记录详细的振动日志
- * 测试人员可通过微信开发者工具控制台查看日志，或调用 getDebugLogs() 获取日志内容
+ * 调试模式：由 localStorage('debugMode') 控制
+ * 当 debugMode 为 true 时，才会记录详细的振动日志
+ * 测试人员可通过微信开发者工具控制台查看日志
  */
 // #region debug-point: 调试日志模块
-const DEBUG_MODE = true  // 调试模式开关，生产环境设为 false
-const logger = wx.getLogManager({ level: 1 })  // 日志管理器，level 1 记录所有日志
-const debugLogs: string[] = []  // 内存日志缓存，用于实时查看
 
 /**
- * 记录调试日志
+ * 获取当前调试模式状态
+ * @returns true = 调试模式开启，false = 调试模式关闭（默认关闭）
+ */
+function isDebugMode(): boolean {
+  // 确保默认值是关闭，只有显式设置为 true 时才开启
+  return wx.getStorageSync('debugMode') === true
+}
+
+/**
+ * 记录调试日志（仅在调试模式开启时生效）
  * @param tag 日志标签（如 [VIBRATE-API]、[DEVICE-CHECK]）
  * @param message 日志内容
  * @param data 附加数据对象
  */
 function debugLog(tag: string, message: string, data?: object) {
-  if (!DEBUG_MODE) return
+  if (!isDebugMode()) return  // 仅在调试模式下输出日志
   
   const timestamp = new Date().toISOString()
   const logEntry = `[${timestamp}] ${tag} ${message}${data ? ` | ${JSON.stringify(data)}` : ''}`
   
   // 写入微信日志管理器（可通过 wx.getLogManager 获取）
+  const logger = wx.getLogManager({ level: 1 })
   logger.log(logEntry)
   
   // 同时写入内存缓存（方便实时查看）
   debugLogs.push(logEntry)
   
+  // 保存到全局数据（即使页面销毁也能获取）
+  const app = getApp()
+  if (!app.globalData.debugLogs) {
+    app.globalData.debugLogs = []
+  }
+  app.globalData.debugLogs.push(logEntry)
+  
   // 控制台输出（开发者工具可见）
   console.log(logEntry)
 }
+
+const debugLogs: string[] = []  // 内存日志缓存
 
 /**
  * 获取所有调试日志（供测试人员调用）
@@ -41,10 +58,22 @@ function getDebugLogs(): string[] {
 }
 
 /**
+ * 导出调试日志（用于跨页面共享）
+ */
+function exportDebugLogs(): string {
+  // 优先返回全局数据中的日志
+  const app = getApp()
+  const globalLogs = app.globalData.debugLogs || []
+  return globalLogs.join('\n')
+}
+
+/**
  * 清空调试日志缓存
  */
 function clearDebugLogs(): void {
   debugLogs.length = 0
+  const app = getApp()
+  app.globalData.debugLogs = []
 }
 // #endregion
 
