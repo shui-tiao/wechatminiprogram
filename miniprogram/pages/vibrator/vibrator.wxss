@@ -6,6 +6,182 @@ page {
   width: 100%;
 }
 
+/* ========== 科技风格特定样式 ========== */
+/* 当容器有 tech-style 类时应用科技风格 */
+.container.tech-style {
+  background: #0a0a0a !important;
+  color: #e0e0e0 !important;
+}
+
+.container.tech-style .card {
+  background: #1a1a2e !important;
+  border: 1px solid #16213e !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.container.tech-style .title {
+  color: #e94560 !important;
+  font-family: 'Courier New', monospace !important;
+  letter-spacing: 2px !important;
+}
+
+.container.tech-style .subtitle {
+  color: #8899bb !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.container.tech-style .input-wrapper {
+  background: #16213e !important;
+  border: 1px solid #0f3460 !important;
+}
+
+.container.tech-style .time-input {
+  color: #ff6b81 !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.container.tech-style .unit {
+  color: #533483 !important;
+}
+
+.container.tech-style .btn-start {
+  background: linear-gradient(135deg, #e94560 0%, #0f3460 100%) !important;
+  border: 1px solid #e94560 !important;
+  font-family: 'Courier New', monospace !important;
+  letter-spacing: 1px !important;
+}
+
+.container.tech-style .btn-stop {
+  background: linear-gradient(135deg, #e94560 0%, #c73e54 100%) !important;
+  border: 1px solid #e94560 !important;
+}
+
+.container.tech-style .intensity-toggle {
+  background: #16213e !important;
+  border: 1px solid #0f3460 !important;
+}
+
+.container.tech-style .progress-bar {
+  background: #16213e !important;
+  border: 1px solid #0f3460 !important;
+}
+
+.container.tech-style .progress-fill {
+  background: linear-gradient(90deg, #e94560 0%, #0f3460 100%) !important;
+}
+
+.container.tech-style .progress-text {
+  color: #ffffff !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 10px rgba(233, 69, 96, 0.5) !important;
+}
+
+.container.tech-style .tip-text {
+  color: #8899bb !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+/* ========== 边框风格 ========== */
+.container.outline-style {
+  background: #f8f8f8 !important;
+}
+
+.container.outline-style .card {
+  background: transparent !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+.container.outline-style .title {
+  color: inherit !important;
+}
+
+.container.outline-style .subtitle {
+  color: inherit !important;
+  opacity: 0.6 !important;
+}
+
+.container.outline-style .input-wrapper {
+  background: transparent !important;
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: 12px !important;
+}
+
+.container.outline-style .time-input {
+  color: inherit !important;
+}
+
+.container.outline-style .unit {
+  color: inherit !important;
+  opacity: 0.5 !important;
+}
+
+.container.outline-style .btn-start {
+  background: transparent !important;
+  border: 2px solid var(--border-color) !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.container.outline-style .btn-stop {
+  background: transparent !important;
+  border: 2px solid var(--border-color) !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.container.outline-style .intensity-toggle {
+  background: transparent !important;
+  border: 1.5px solid var(--border-color) !important;
+  color: inherit !important;
+}
+
+.container.outline-style .progress-bar {
+  background: transparent !important;
+  border: 1.5px solid var(--border-color) !important;
+}
+
+.container.outline-style .progress-fill {
+  background: var(--border-color) !important;
+  opacity: 0.3 !important;
+}
+
+.container.outline-style .progress-text {
+  color: inherit !important;
+  text-shadow: none !important;
+}
+
+.container.outline-style .tip-text {
+  color: inherit !important;
+  font-family: inherit !important;
+  opacity: 0.5 !important;
+}
+
+/* 深色模式下的边框风格 */
+@media (prefers-color-scheme: dark) {
+  .container.outline-style {
+    background: #000000 !important;
+  }
+
+  .container.outline-style .btn-start {
+    border-color: var(--border-color) !important;
+    color: inherit !important;
+  }
+
+  .container.outline-style .btn-stop {
+    border-color: var(--border-color) !important;
+    color: inherit !important;
+  }
+
+  .container.outline-style .intensity-toggle {
+    border-color: var(--border-color) !important;
+  }
+
+  .container.outline-style .progress-bar {
+    border-color: var(--border-color) !important;
+  }
+}
+
 /* 深色模式：使用 !important 覆盖 WXML 内联样式 */
 @media (prefers-color-scheme: dark) {
   page {

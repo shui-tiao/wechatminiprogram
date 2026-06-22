@@ -2,6 +2,13 @@
  * 功能选择页面
  * 用户首次进入小程序时展示的功能入口界面
  */
+
+/** 功能 ID 到页面路径的映射表 */
+const FEATURE_ROUTES: Record<string, string> = {
+  vibrator: '/pages/vibrator/vibrator',
+  'answer-book': '/pages/answer-book/answer-book',
+}
+
 Page({
   /**
    * 页面的初始数据
@@ -15,6 +22,13 @@ Page({
         title: '振动器',           // 功能名称
         desc: '设置振动时长，体验设备振动',  // 功能描述
         color: '#667eea',         // 主题色（用于图标背景）
+      },
+      {
+        id: 'answer-book',
+        icon: '📖',
+        title: '答案之书',
+        desc: '心中默念问题，翻开获得答案',
+        color: '#e94560',
       },
     ],
     showDebugLogs: false,        // 是否显示日志查看器
@@ -52,12 +66,20 @@ Page({
    */
   onFeatureTap(e: any) {
     const { id } = e.currentTarget.dataset
-    if (id === 'vibrator') {
-      // 导航到振动器页面
-      wx.navigateTo({
-        url: '/pages/vibrator/vibrator',
-      })
+    const url = FEATURE_ROUTES[id]
+    if (url) {
+      wx.navigateTo({ url })
     }
+  },
+
+  /**
+   * 设置卡片点击事件
+   * 导航到设置页面
+   */
+  onSettingsTap() {
+    wx.navigateTo({
+      url: '/pages/settings/settings',
+    })
   },
 
   /**

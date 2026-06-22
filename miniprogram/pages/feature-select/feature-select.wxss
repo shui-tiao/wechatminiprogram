@@ -97,6 +97,12 @@ page {
   opacity: 0.9;
 }
 
+/* 设置卡片特殊样式 */
+.settings-card {
+  border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
 /* 功能图标容器：圆角方形背景 */
 .feature-icon {
   width: 56px;

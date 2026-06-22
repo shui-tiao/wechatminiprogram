@@ -1,0 +1,410 @@
+/* ========== 页面根元素 ========== */
+page {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* ========== 容器 ========== */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  padding-top: calc(40px + env(safe-area-inset-top));
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  transition: background 0.5s ease;
+}
+
+/* ========== 卡片 ========== */
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 36px 28px;
+  box-sizing: border-box;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ========== 头部 ========== */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  display: block;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ========== 答案展示区域 ========== */
+.answer-section {
+  margin-bottom: 28px;
+}
+
+.answer-wrapper {
+  min-height: 220px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* 书本封面 */
+.book-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
+}
+
+.book-icon {
+  font-size: 80px;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.book-cover:active .book-icon {
+  transform: scale(0.9);
+}
+
+.book-hint {
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+/* 翻开后的答案 */
+.book-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  animation: fadeInUp 0.6s ease;
+}
+
+.answer-text {
+  font-size: clamp(28px, 8vw, 40px);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.answer-sub {
+  font-size: 13px;
+  opacity: 0.5;
+  letter-spacing: 2px;
+}
+
+/* 动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 翻开动画 */
+.show-answer {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ========== 按钮区域 ========== */
+.button-section {
+  margin-bottom: 20px;
+}
+
+.btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.btn-reveal {
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn-again {
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ========== 底部提示 ========== */
+.tips {
+  text-align: center;
+}
+
+.tip-text {
+  font-size: 13px;
+  opacity: 0.5;
+  line-height: 1.6;
+}
+
+/* ========== 科技风格 ========== */
+.container.tech-style {
+  background: #0a0a0a !important;
+  color: #e0e0e0 !important;
+}
+
+.container.tech-style .card {
+  background: #1a1a2e !important;
+  border: 1px solid #16213e !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.container.tech-style .title {
+  color: #e94560 !important;
+  font-family: 'Courier New', monospace !important;
+  letter-spacing: 2px !important;
+}
+
+.container.tech-style .subtitle {
+  color: #8899bb !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.container.tech-style .answer-text {
+  color: #ff6b81 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 20px rgba(233, 69, 96, 0.3) !important;
+}
+
+.container.tech-style .answer-sub {
+  color: #8899bb !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.container.tech-style .btn-reveal {
+  background: linear-gradient(135deg, #e94560 0%, #0f3460 100%) !important;
+  border: 1px solid #e94560 !important;
+  font-family: 'Courier New', monospace !important;
+  letter-spacing: 1px !important;
+}
+
+.container.tech-style .btn-again {
+  background: #16213e !important;
+  border: 1px solid #0f3460 !important;
+  color: #ff6b81 !important;
+}
+
+.container.tech-style .book-content {
+  background: #16213e !important;
+  border: 1px solid #0f3460 !important;
+  border-radius: 20px !important;
+}
+
+.container.tech-style .tip-text {
+  color: #8899bb !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.container.tech-style .book-hint {
+  color: #8899bb !important;
+  opacity: 1 !important;
+}
+
+/* ========== 边框风格 ========== */
+.container.outline-style {
+  background: #f8f8f8 !important;
+}
+
+.container.outline-style .card {
+  background: transparent !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.container.outline-style .title {
+  color: inherit !important;
+}
+
+.container.outline-style .subtitle {
+  color: inherit !important;
+  opacity: 0.6 !important;
+}
+
+.container.outline-style .book-cover {
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: 20px !important;
+  opacity: 0.5 !important;
+}
+
+.container.outline-style .book-hint {
+  color: inherit !important;
+  opacity: 0.5 !important;
+}
+
+.container.outline-style .book-content {
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: 20px !important;
+  background: transparent !important;
+}
+
+.container.outline-style .answer-text {
+  color: inherit !important;
+  text-shadow: none !important;
+}
+
+.container.outline-style .answer-sub {
+  color: inherit !important;
+  opacity: 0.5 !important;
+}
+
+.container.outline-style .btn-reveal {
+  background: transparent !important;
+  border: 2px solid var(--border-color) !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.container.outline-style .btn-again {
+  background: transparent !important;
+  border: 2px solid var(--border-color) !important;
+  color: inherit !important;
+}
+
+.container.outline-style .tip-text {
+  color: inherit !important;
+  font-family: inherit !important;
+  opacity: 0.5 !important;
+}
+
+/* 深色模式下的边框风格 */
+@media (prefers-color-scheme: dark) {
+  .container.outline-style {
+    background: #000000 !important;
+  }
+
+  .container.outline-style .btn-reveal {
+    border-color: var(--border-color) !important;
+    color: inherit !important;
+  }
+
+  .container.outline-style .btn-again {
+    border-color: var(--border-color) !important;
+    color: inherit !important;
+  }
+
+  .container.outline-style .book-cover {
+    border-color: var(--border-color) !important;
+  }
+}
+
+/* ========== 深色模式覆盖 ========== */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: #000000 !important;
+    color: #ffffff !important;
+  }
+
+  .btn-reveal {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-again {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+/* ========== 调试面板 ========== */
+.debug-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 40vh;
+  background: rgba(0, 0, 0, 0.9);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.debug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.debug-title {
+  font-size: 14px;
+  color: #e94560;
+  font-family: 'Courier New', monospace;
+}
+
+.debug-close {
+  font-size: 18px;
+  color: #999;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.debug-scroll {
+  padding: 8px 16px;
+  max-height: calc(40vh - 44px);
+  overflow-y: auto;
+}
+
+.debug-line {
+  display: block;
+  font-size: 11px;
+  color: #0f0;
+  font-family: 'Courier New', monospace;
+  line-height: 1.6;
+  word-break: break-all;
+}

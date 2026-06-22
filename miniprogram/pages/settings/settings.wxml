@@ -1,0 +1,69 @@
+<!-- 设置页面 -->
+<view class="page">
+  <!-- 头部区域 -->
+  <view class="header">
+    <text class="title">设置</text>
+    <text class="subtitle">自定义您的界面风格</text>
+  </view>
+
+  <!-- 界面风格选择区域 -->
+  <view class="settings-section">
+    <text class="section-title">界面风格</text>
+    
+    <!-- 风格选项卡片 -->
+    <view class="style-options">
+      <!-- 渐变风格卡片 -->
+      <view 
+        class="style-card {{currentStyle === 'gradient' ? 'active' : ''}}"
+        bindtap="selectStyle"
+        data-style="gradient"
+      >
+        <view class="style-preview gradient-preview">
+          <view class="preview-circle"></view>
+        </view>
+        <view class="style-info">
+          <text class="style-name">渐变风格</text>
+          <text class="style-desc">色彩丰富的渐变背景</text>
+        </view>
+        <view class="check-icon" wx:if="{{currentStyle === 'gradient'}}">✓</view>
+      </view>
+
+      <!-- 科技风格卡片 -->
+      <view 
+        class="style-card {{currentStyle === 'tech' ? 'active' : ''}}"
+        bindtap="selectStyle"
+        data-style="tech"
+      >
+        <view class="style-preview tech-preview">
+          <view class="preview-square"></view>
+        </view>
+        <view class="style-info">
+          <text class="style-name">科技风格</text>
+          <text class="style-desc">简约现代的科技感设计</text>
+        </view>
+        <view class="check-icon" wx:if="{{currentStyle === 'tech'}}">✓</view>
+      </view>
+
+      <!-- 边框风格卡片 -->
+      <view 
+        class="style-card {{currentStyle === 'outline' ? 'active' : ''}}"
+        bindtap="selectStyle"
+        data-style="outline"
+      >
+        <view class="style-preview outline-preview">
+          <view class="preview-outline-box"></view>
+        </view>
+        <view class="style-info">
+          <text class="style-name">边框风格</text>
+          <text class="style-desc">只有色彩边框的简洁设计</text>
+        </view>
+        <view class="check-icon" wx:if="{{currentStyle === 'outline'}}">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 返回按钮 -->
+  <view class="back-section">
+    <button class="back-btn" bindtap="goBack">返回功能大厅</button>
+  </view>
+</view>

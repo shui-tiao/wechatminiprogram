@@ -10,6 +10,7 @@ App<IAppOption>({
   globalData: {
     debugLogs: [],        // 调试日志缓存数组，每个元素为一条日志字符串
     debugLogsToShare: '', // 待分享的日志拼接文本，用于跨页面导出日志
+    uiStyle: 'gradient',  // 全局界面风格：gradient（渐变）或 tech（科技）
   },
   
   /**

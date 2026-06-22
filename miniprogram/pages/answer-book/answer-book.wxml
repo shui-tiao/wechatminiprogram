@@ -1,0 +1,60 @@
+<view class="container {{containerClass}}" style="background: {{containerBg}}; color: {{textColor}}; --border-color: {{borderColor || textColor}};">
+  <view class="card">
+    <!-- 头部区域 -->
+    <view class="header">
+      <text class="title">📖 答案之书</text>
+      <text class="subtitle">在心中默念你的问题，然后点击翻开</text>
+    </view>
+
+    <!-- 答案展示区域 -->
+    <view class="answer-section">
+      <view class="answer-wrapper {{showAnswer ? 'show-answer' : ''}}" bindtap="onRevealAnswer">
+        <!-- 翻开前：书本封面 -->
+        <view wx:if="{{!showAnswer}}" class="book-cover">
+          <view class="book-icon">📕</view>
+          <text class="book-hint">点击翻开答案</text>
+        </view>
+        <!-- 翻开后：答案内容 -->
+        <view wx:else class="book-content">
+          <view class="answer-text">{{currentAnswer}}</view>
+          <view class="answer-sub">—— 答案之书</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 按钮区域 -->
+    <view class="button-section">
+      <button
+        wx:if="{{!showAnswer}}"
+        class="btn btn-reveal"
+        style="background: {{btnBg}}; color: {{textColor}};"
+        bindtap="onRevealAnswer"
+      >
+        ✨ 翻开答案
+      </button>
+      <button
+        wx:else
+        class="btn btn-again"
+        bindtap="onAskAgain"
+      >
+        🔄 再问一次
+      </button>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="tips">
+      <text class="tip-text">💡 答案仅供参考，真正的答案在你心中</text>
+    </view>
+  </view>
+
+  <!-- 调试日志查看器 -->
+  <view class="debug-panel" wx:if="{{showDebug}}">
+    <view class="debug-header">
+      <text class="debug-title">🛠 调试日志</text>
+      <text class="debug-close" bindtap="onToggleDebug">✕</text>
+    </view>
+    <scroll-view class="debug-scroll" scroll-y>
+      <text wx:for="{{debugLogs}}" wx:key="*this" class="debug-line">{{item}}</text>
+    </scroll-view>
+  </view>
+</view>

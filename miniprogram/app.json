@@ -2,6 +2,8 @@
   "pages": [
     "pages/feature-select/feature-select",
     "pages/vibrator/vibrator",
+    "pages/answer-book/answer-book",
+    "pages/settings/settings",
     "pages/logs/logs"
   ],
   "window": {

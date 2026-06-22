@@ -30,6 +30,22 @@
       <view class="feature-arrow">›</view>
     </view>
 
+    <!-- 设置卡片 -->
+    <view
+      class="feature-card settings-card"
+      bindtap="onSettingsTap"
+      hover-class="feature-card-hover"
+    >
+      <view class="feature-icon" style="background: #667eea22;">
+        <text class="feature-emoji">⚙️</text>
+      </view>
+      <view class="feature-info">
+        <text class="feature-title">设置</text>
+        <text class="feature-desc">自定义界面风格</text>
+      </view>
+      <view class="feature-arrow">›</view>
+    </view>
+
     <!-- 底部提示区域 -->
     <view class="footer" bindtap="onDebugModeTap">
       <text class="footer-text">更多功能敬请期待</text>
