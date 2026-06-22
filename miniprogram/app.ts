@@ -5,11 +5,11 @@
 // app.ts
 App<IAppOption>({
   /**
-   * 全局数据对象，可在所有页面中访问
+   * 全局数据对象，可在所有页面和组件中通过 getApp() 访问
    */
   globalData: {
-    debugLogs: [],        // 调试日志缓存
-    debugLogsToShare: '', // 待分享的日志内容
+    debugLogs: [],        // 调试日志缓存数组，每个元素为一条日志字符串
+    debugLogsToShare: '', // 待分享的日志拼接文本，用于跨页面导出日志
   },
   
   /**
@@ -26,9 +26,9 @@ App<IAppOption>({
   /**
    * 小程序显示生命周期函数
    * 当小程序从后台进入前台显示时触发
+   * 标记用户已访问过功能选择页面，避免后续从正常流程重复跳转到功能选择页
    */
   onShow() {
-    // 标记用户已访问过功能选择页面
     wx.setStorageSync('hasVisitedFeatureSelect', 'true')
   },
 

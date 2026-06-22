@@ -67,7 +67,11 @@ Component({
    * 组件的初始数据
    */
   data: {
-    displayStyle: ''  // 显示样式（opacity 或 display）
+    displayStyle: '',  // 导航栏显示样式：opacity 动画样式或 display 直接显隐样式
+    ios: false,        // 是否为 iOS 平台（用于适配不同的样式表现）
+    innerPaddingRight: '',  // 右侧内边距样式，将导航栏内容左移以避开胶囊按钮
+    leftWidth: '',          // 左侧区域宽度样式，定义返回按钮的可点击区域
+    safeAreaTop: '',        // 安全区域顶部样式，适配刘海屏的顶部内边距
   },
   /**
    * 组件生命周期函数
@@ -127,6 +131,7 @@ Component({
     /**
      * 返回按钮点击事件
      * 调用 wx.navigateBack 返回上一页或指定深度的页面
+     * 同时触发 back 事件通知父组件
      */
     back() {
       const data = this.data
@@ -135,7 +140,7 @@ Component({
           delta: data.delta
         })
       }
-      // 触发 back 事件，通知父组件
+      // 触发 back 事件，通知父组件（便于父组件执行自定义逻辑）
       this.triggerEvent('back', { delta: data.delta }, {})
     }
   },

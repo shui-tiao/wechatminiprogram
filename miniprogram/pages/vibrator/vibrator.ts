@@ -47,7 +47,7 @@ function debugLog(tag: string, message: string, data?: object) {
   console.log(logEntry)
 }
 
-const debugLogs: string[] = []  // 内存日志缓存
+const debugLogs: string[] = []  // 模块级内存日志缓存（页面销毁后该变量仍保留，但切换页面实例会丢失）
 
 /**
  * 获取所有调试日志（供测试人员调用）
@@ -102,10 +102,10 @@ Page({
     vibrateTip: '',           // 设备不支持振动时的提示（iPad/iPod/老款iPhone）
   },
 
-  timer: null as ReturnType<typeof setInterval> | null,      // 倒计时定时器
-  vibrateTimer: null as ReturnType<typeof setTimeout> | null,  // 振动循环定时器
-  isStopped: false,           // 是否已停止
-  isDarkTheme: false,          // 是否暗色模式
+  timer: null as ReturnType<typeof setInterval> | null,      // 倒计时间隔定时器（每秒更新一次）
+  vibrateTimer: null as ReturnType<typeof setTimeout> | null,  // 振动循环超时定时器（递归 setTimeout）
+  isStopped: false,           // 是否已停止（标记位，用于中断振动循环和倒计时）
+  isDarkTheme: false,          // 是否暗色模式（同步系统主题）
 
   /**
    * 生命周期函数--监听页面加载
@@ -185,6 +185,7 @@ Page({
   /**
    * 生成随机主题颜色
    * 无论当前主题，都生成随机颜色保存到 themeColor/themeColor2，供主题切换时使用
+   * 同时根据当前系统主题（深色/浅色）设置导航栏和页面实际的显示颜色
    */
   generateRandomTheme() {
     // 先生成随机颜色（无论当前主题）
@@ -317,7 +318,8 @@ Page({
 
   /**
    * 监听系统主题变化，实时更新导航栏和页面颜色
-   * @param e 主题变化事件，包含 theme 属性
+   * 当用户在系统设置中切换深色/浅色模式时触发
+   * @param e 主题变化事件对象，e.theme 取值为 'dark' 或 'light'
    */
   onThemeChange(e: any) {
     this.setThemeColor(e.theme === 'dark')
@@ -325,7 +327,8 @@ Page({
 
   /**
    * 输入框输入事件
-   * @param e 输入事件对象
+   * 实时更新页面数据中的秒数字段
+   * @param e 输入事件对象，包含 e.detail.value（字符串类型）
    */
   onInput(e: any) {
     this.setData({
@@ -334,7 +337,8 @@ Page({
   },
 
   /**
-   * 复用上次的时间
+   * 复用上次的振动时长
+   * 将上次使用的秒数填入输入框，并隐藏复用按钮
    */
   reuseLastTime() {
     this.setData({
@@ -345,6 +349,8 @@ Page({
 
   /**
    * 切换振动强度
+   * 在 strong（长振动/wx.vibrateLong）和 weak（短振动/wx.vibrateShort type='light'）之间切换
+   * 无参数，切换结果反映在 data.vibrateIntensity 中
    */
   toggleIntensity() {
     const intensity = this.data.vibrateIntensity === 'strong' ? 'weak' : 'strong'
@@ -510,6 +516,7 @@ Page({
 
   /**
    * 手动停止振动
+   * 清除所有定时器并将页面状态重置为初始态
    */
   manualStop() {
     // #region debug-point: H3 手动停止日志
@@ -540,8 +547,9 @@ Page({
   },
 
   /**
-   * 停止振动
-   * @param isFinished 是否正常完成
+   * 停止振动（自动完成或手动中断后的统一清理）
+   * 清除所有定时器，重置页面状态
+   * @param isFinished 是否正常完成振动（true=正常结束，会播放结束提示振动；false=手动中断，不播放提示）
    */
   stopVibration(isFinished = false) {
     // #region debug-point: H3 自动停止日志
