@@ -28,3 +28,272 @@ page {
     --border-color: #3a3a3a;  /* 边框颜色 - 深灰 */
   }
 }
+
+/* ========== 液态玻璃风格全局样式 ========== */
+
+/* 光晕呼吸动画 - 仅 opacity + box-shadow 变化，避免 transform 与 overflow/布局冲突 */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    box-shadow: 0 0 100rpx 60rpx rgba(150, 190, 255, 0.25);
+  }
+  50% {
+    opacity: 0.75;
+    box-shadow: 0 0 160rpx 100rpx rgba(150, 190, 255, 0.5);
+  }
+}
+
+@keyframes glow-pulse-sub {
+  0%, 100% {
+    opacity: 0.2;
+    box-shadow: 0 0 80rpx 40rpx rgba(210, 180, 255, 0.2);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 120rpx 80rpx rgba(210, 180, 255, 0.4);
+  }
+}
+
+.container.glass-style {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 光晕核心层 - 主光晕（居中 + 径向渐变） */
+.glass-style .glow-main {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600rpx;
+  height: 600rpx;
+  margin-top: -300rpx;
+  margin-left: -300rpx;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(150, 190, 255, 0.55) 0%,
+    rgba(180, 210, 240, 0.25) 35%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+/* 光晕次层 - 辅助光晕（偏移位置增加层次感） */
+.glass-style .glow-sub {
+  position: absolute;
+  top: 30%;
+  left: 60%;
+  width: 350rpx;
+  height: 350rpx;
+  margin-top: -175rpx;
+  margin-left: -175rpx;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(210, 180, 255, 0.4) 0%,
+    rgba(200, 190, 255, 0.2) 30%,
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: glow-pulse-sub 5s ease-in-out infinite 0.5s;
+}
+
+/* 确保卡片在光晕之上 */
+.container.glass-style .card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-style .btn-roll {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-style .btn-roll:active {
+  background: rgba(245, 245, 255, 0.95);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* 液态玻璃风格 - 其他按钮样式 */
+.glass-style .btn {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-style .btn:active {
+  background: rgba(245, 245, 255, 0.95);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-style .btn-start,
+.glass-style .btn-reveal,
+.glass-style .btn-again,
+.glass-style .btn-stop {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-style .book-cover {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-style .book-content {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-style .input-wrapper {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-style .intensity-toggle {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 深色模式液态玻璃风格 */
+@media (prefers-color-scheme: dark) {
+  /* 深色模式 - 光晕呼吸动画 */
+  @keyframes glow-pulse-dark {
+    0%, 100% {
+      opacity: 0.12;
+      box-shadow: 0 0 100rpx 60rpx rgba(80, 140, 220, 0.12);
+    }
+    50% {
+      opacity: 0.35;
+      box-shadow: 0 0 160rpx 100rpx rgba(80, 140, 220, 0.3);
+    }
+  }
+
+  @keyframes glow-pulse-dark-sub {
+    0%, 100% {
+      opacity: 0.08;
+      box-shadow: 0 0 80rpx 40rpx rgba(180, 130, 220, 0.08);
+    }
+    50% {
+      opacity: 0.25;
+      box-shadow: 0 0 120rpx 80rpx rgba(180, 130, 220, 0.2);
+    }
+  }
+
+  .container.glass-style {
+    /* 背景由内联 style 提供，此处无需设置 */
+  }
+
+  /* 深色模式 - 主光晕（低饱和度冷色调） */
+  .glass-style .glow-main {
+    background: radial-gradient(
+      circle at center,
+      rgba(80, 140, 220, 0.45) 0%,
+      rgba(60, 120, 200, 0.2) 30%,
+      transparent 70%
+    );
+    animation: glow-pulse-dark 4s ease-in-out infinite;
+  }
+
+  /* 深色模式 - 辅助光晕（暖色调偏移） */
+  .glass-style .glow-sub {
+    background: radial-gradient(
+      circle at center,
+      rgba(180, 130, 220, 0.3) 0%,
+      rgba(140, 110, 200, 0.15) 30%,
+      transparent 65%
+    );
+    animation: glow-pulse-dark-sub 5s ease-in-out infinite 0.5s;
+  }
+
+  .container.glass-style .card {
+    background: rgba(30, 30, 35, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-style .btn-roll,
+  .glass-style .btn,
+  .glass-style .btn-start,
+  .glass-style .btn-reveal,
+  .glass-style .btn-again,
+  .glass-style .btn-stop {
+    background: rgba(45, 45, 50, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-style .btn-roll:active,
+  .glass-style .btn:active {
+    background: rgba(55, 55, 60, 0.85);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-style .book-cover {
+    background: rgba(40, 40, 45, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-style .book-content {
+    background: rgba(40, 40, 45, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .glass-style .input-wrapper {
+    background: rgba(40, 40, 45, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-style .intensity-toggle {
+    background: rgba(50, 50, 55, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}

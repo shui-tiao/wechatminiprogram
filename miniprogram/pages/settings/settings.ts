@@ -53,6 +53,7 @@ Page({
       gradient: '渐变风格',
       tech: '科技风格',
       outline: '边框风格',
+      glass: '琉璃（测试）',
     }
     wx.showToast({
       title: `已切换至${styleMap[style] || style}`,

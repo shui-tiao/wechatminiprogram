@@ -2,10 +2,11 @@
  * 主题管理模块
  * 统一管理小程序的界面风格主题系统
  *
- * 支持三种风格：
+ * 支持四种风格：
  * - gradient：随机渐变风格（默认），每次进入页面生成随机 HSL 渐变
  * - tech：固定科技风格，使用深色背景 + 固定配色
  * - outline：简洁边框风格，无填充色，仅用色彩边框勾勒
+ * - glass：琉璃风格，iOS 26 风格的半透明模糊效果
  *
  * 使用方式：
  * ```
@@ -24,7 +25,7 @@
 // ========== 类型定义 ==========
 
 /** 界面风格选项 */
-export type UiStyle = 'gradient' | 'tech' | 'outline'
+export type UiStyle = 'gradient' | 'tech' | 'outline' | 'glass'
 
 /** 主题配置对象，包含页面渲染需要的所有颜色值 */
 export interface ThemeConfig {
@@ -70,6 +71,29 @@ const DARK_COLORS = {
   containerBg: '#000000',
   btnBg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   progressBg: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+}
+
+// ========== 琉璃风格固定色值 ==========
+
+const GLASS_COLORS = {
+  light: {
+    navBg: '#ffffff',
+    navText: '#000000',
+    textColor: '#333333',
+    containerBg: 'linear-gradient(135deg, #f5f8ff 0%, #ecf3fe 50%, #f6f2ff 100%)',
+    btnBg: 'rgba(255, 255, 255, 0.8)',
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  dark: {
+    navBg: '#0a0a0a',
+    navText: '#ffffff',
+    textColor: '#ffffff',
+    containerBg: 'linear-gradient(135deg, #1e1e32 0%, #1a2640 50%, #1e1e32 100%)',
+    btnBg: 'rgba(40, 40, 40, 0.8)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    shadowColor: 'rgba(0, 0, 0, 0.3)',
+  },
 }
 
 // ========== 工具函数 ==========
@@ -122,7 +146,7 @@ export function generateRandomThemeColors(): ThemeConfig {
  */
 export function getSavedUiStyle(): UiStyle {
   const saved = wx.getStorageSync('uiStyle')
-  if (saved === 'gradient' || saved === 'tech' || saved === 'outline') {
+  if (saved === 'gradient' || saved === 'tech' || saved === 'outline' || saved === 'glass') {
     return saved
   }
   return 'gradient'
@@ -190,6 +214,7 @@ export class ThemeManager {
   private getContainerClass(uiStyle: UiStyle): string {
     if (uiStyle === 'tech') return 'tech-style'
     if (uiStyle === 'outline') return 'outline-style'
+    if (uiStyle === 'glass') return 'glass-style'
     return ''
   }
 
@@ -248,6 +273,8 @@ export class ThemeManager {
       this.applyTechStyle()
     } else if (uiStyle === 'outline') {
       this.applyOutlineStyle(isDark)
+    } else if (uiStyle === 'glass') {
+      this.applyGlassStyle(isDark)
     } else if (isDark) {
       this.applyDarkStyle()
     } else {
@@ -290,6 +317,19 @@ export class ThemeManager {
     this.page.setData(this.buildLightData(themeColor, themeColor2, parsed))
   }
 
+  /** ====== 琉璃风格 ====== */
+
+  private applyGlassStyle(isDark: boolean): void {
+    const colors = isDark ? GLASS_COLORS.dark : GLASS_COLORS.light
+
+    wx.setNavigationBarColor({
+      frontColor: colors.navText,
+      backgroundColor: colors.navBg,
+    })
+
+    this.page.setData(this.buildGlassData(isDark))
+  }
+
   /** ====== 边框风格 ====== */
 
   private applyOutlineStyle(isDark: boolean): void {
@@ -313,6 +353,10 @@ export class ThemeManager {
       const isDark = wx.getAppBaseInfo().theme === 'dark'
       const hex = getThemeHex(this.themeConfig.themeColor) || '#667eea'
       return this.buildOutlineData(isDark, hex)
+    }
+    if (uiStyle === 'glass') {
+      const isDark = wx.getAppBaseInfo().theme === 'dark'
+      return this.buildGlassData(isDark)
     }
     const isDark = wx.getAppBaseInfo().theme === 'dark'
     if (isDark) return this.buildDarkData()
@@ -382,6 +426,25 @@ export class ThemeManager {
     }
     if (this.hasProgress) {
       data.progressBg = `outline:${hex}`
+    }
+    return data
+  }
+
+  /** ====== 琉璃风格的显示数据构建 ====== */
+
+  /**
+   * 琉璃风格：半透明背景、模糊效果、柔和阴影，类似iOS 26的琉璃设计
+   */
+  private buildGlassData(isDark: boolean): Record<string, any> {
+    const colors = isDark ? GLASS_COLORS.dark : GLASS_COLORS.light
+    const data: Record<string, any> = {
+      textColor: colors.textColor,
+      borderColor: colors.borderColor,
+      containerBg: colors.containerBg,
+      btnBg: colors.btnBg,
+    }
+    if (this.hasProgress) {
+      data.progressBg = colors.btnBg
     }
     return data
   }

@@ -55,9 +55,25 @@
         </view>
         <view class="style-info">
           <text class="style-name">边框风格</text>
-          <text class="style-desc">只有色彩边框的简洁设计</text>
+          <text class="style-desc">色彩边框简约设计</text>
         </view>
         <view class="check-icon" wx:if="{{currentStyle === 'outline'}}">✓</view>
+      </view>
+
+      <!-- 琉璃风格卡片 -->
+      <view 
+        class="style-card {{currentStyle === 'glass' ? 'active' : ''}}"
+        bindtap="selectStyle"
+        data-style="glass"
+      >
+        <view class="style-preview glass-preview">
+          <view class="preview-glass-box"></view>
+        </view>
+        <view class="style-info">
+          <text class="style-name">琉璃（测试）</text>
+          <text class="style-desc">琉璃效果</text>
+        </view>
+        <view class="check-icon" wx:if="{{currentStyle === 'glass'}}">✓</view>
       </view>
     </view>
   </view>

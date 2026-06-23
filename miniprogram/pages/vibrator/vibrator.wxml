@@ -1,4 +1,7 @@
 <view class="container {{containerClass}}" style="background: {{containerBg}}; color: {{textColor}}; --border-color: {{borderColor || textColor}};">
+  <!-- 液态玻璃光晕效果 -->
+  <view class="glow-main"></view>
+  <view class="glow-sub"></view>
   <view class="card">
     <!-- 头部区域：标题和副标题 -->
     <view class="header">
