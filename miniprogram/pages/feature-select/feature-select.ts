@@ -7,6 +7,7 @@
 const FEATURE_ROUTES: Record<string, string> = {
   vibrator: '/pages/vibrator/vibrator',
   'answer-book': '/pages/answer-book/answer-book',
+  'what-to-eat': '/pages/what-to-eat/what-to-eat',
 }
 
 Page({
@@ -29,6 +30,13 @@ Page({
         title: '答案之书',
         desc: '心中默念问题，翻开获得答案',
         color: '#e94560',
+      },
+      {
+        id: 'what-to-eat',
+        icon: '🍽️',
+        title: '吃什么',
+        desc: '纠结吃什么？让命运来决定',
+        color: '#f093fb',
       },
     ],
     showDebugLogs: false,        // 是否显示日志查看器

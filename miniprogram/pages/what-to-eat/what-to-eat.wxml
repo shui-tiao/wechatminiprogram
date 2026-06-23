@@ -1,0 +1,34 @@
+<view class="container {{containerClass}}" style="background: {{containerBg}}; color: {{textColor}}; --border-color: {{borderColor || textColor}};">
+  <view class="card">
+    <!-- 头部区域 -->
+    <view class="header">
+      <text class="title">吃什么</text>
+      <text class="subtitle">纠结党的福音</text>
+    </view>
+
+    <!-- 结果展示区域 -->
+    <view class="result-section">
+      <view class="food-display {{isRolling ? 'rolling' : ''}}">
+        <text class="food-emoji">{{currentFood ? currentFood.emoji : '❓'}}</text>
+        <text class="food-name">{{currentFood ? currentFood.name : '点击下方按钮开始'}}</text>
+      </view>
+    </view>
+
+    <!-- 按钮区域 -->
+    <view class="button-section">
+      <button
+        class="btn btn-roll"
+        style="background: {{btnBg}}; color: {{textColor}};"
+        bindtap="rollFood"
+        disabled="{{isRolling}}"
+      >
+        {{isRolling ? '选择中...' : '随机选择'}}
+      </button>
+    </view>
+
+    <!-- 提示区域 -->
+    <view class="tips">
+      <text class="tip-text">每天纠结吃什么？让命运来决定吧！</text>
+    </view>
+  </view>
+</view>
